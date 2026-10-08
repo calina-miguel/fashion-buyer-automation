@@ -1,11 +1,11 @@
 {
-  "name": "Fashion Store Interested Buyer Automation",
+  "name": "EyePik Inc. Interested Buyer Automation",
   "nodes": [
     {
       "parameters": {
         "httpMethod": "POST",
         "path": "buyer-interest",
-        "responseMode": "responseNode",
+        "responseMode": "onReceived",
         "options": {}
       },
       "id": "0b2c7b38-b72b-4d9c-98e7-f491ee458814",
@@ -214,12 +214,8 @@
           "mode": "name"
         },
         "columns": {
-          "mappingMode": "defineBelow",
-          "value": {
-            "Email": "={{ $('Normalize and Segment Buyer').item.json.email }}",
-            "Status": "Personal shopping offer sent",
-            "Last Updated": "={{ new Date().toISOString() }}"
-          },
+          "mappingMode": "autoMapInputData",
+          "value": {},
           "matchingColumns": [
             "Email"
           ]
@@ -240,23 +236,6 @@
           "name": "Google Sheets account"
         }
       }
-    },
-    {
-      "parameters": {
-        "respondWith": "json",
-        "responseBody": "={\"ok\":true,\"message\":\"Interest saved\",\"status\":\"{{ $('Normalize and Segment Buyer').item.json.status }}\"}",
-        "options": {
-          "responseCode": 200
-        }
-      },
-      "id": "c41d9a2d-697b-41a3-ae2c-efae74b0cd65",
-      "name": "Respond to Buyer Form",
-      "type": "n8n-nodes-base.respondToWebhook",
-      "typeVersion": 1.1,
-      "position": [
-        -360,
-        360
-      ]
     }
   ],
   "pinData": {},
@@ -298,11 +277,6 @@
           },
           {
             "node": "Ready to Buy?",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Respond to Buyer Form",
             "type": "main",
             "index": 0
           }
