@@ -20,6 +20,7 @@ This is a portable n8n workflow for a fashion and lifestyle store: an end-to-end
 - `fashion-buyer-interest-workflow.json` - n8n workflow export.
 - `server.js` - local server that forwards buyer intake submissions to the live n8n webhook and keeps a local tracker for the page.
 - `public/` - buyer form, live tracker, outbox, and workflow backbone view.
+- `VIDEO_WALKTHROUGH.md` - recording script, shot list, and LinkedIn post copy.
 
 ## Local Setup
 
