@@ -1,0 +1,11 @@
+Managing interested buyers should not mean chasing scattered messages.
+
+For EyePik Inc., this workflow turns buyer interest into a structured sales record:
+
+Buyer form -> n8n -> Google Sheets -> Gmail -> follow-up path
+
+It captures shopper details, segments intent, flags missing preferences, alerts the sales team, and routes ready-to-buy shoppers toward a personal shopping offer.
+
+Built with n8n, Google Sheets, and Gmail.
+
+#n8n #workflowautomation #businessautomation #retailautomation #fashiontech #nocode #salesautomation
