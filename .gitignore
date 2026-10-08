@@ -1,0 +1,7 @@
+node_modules/
+store-data/
+demo-data/
+.env
+.DS_Store
+Thumbs.db
+npm-debug.log*

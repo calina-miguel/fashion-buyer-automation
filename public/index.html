@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Fashion Buyer Automation</title>
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <main class="shell">
+      <section class="panel form-panel">
+        <p class="eyebrow">Luma & Thread</p>
+        <h1>Buyer Interest Desk</h1>
+        <p class="lede">Capture a shopper, segment intent, alert sales, and generate the follow-up in one clean run.</p>
+
+        <form id="buyer-form">
+          <label>Full name<input name="Full Name" value="Amara Reyes" required></label>
+          <label>Email<input name="Email" type="email" value="amara@example.com"></label>
+          <label>WhatsApp / phone<input name="Phone" value="+63 900 000 0000"></label>
+          <label>Product interest<input name="Product Interest" value="linen co-ord set"></label>
+          <label>Category<input name="Category" value="Resort wear"></label>
+          <div class="grid-2">
+            <label>Budget<input name="Budget" value="180"></label>
+            <label>Preferred size<input name="Preferred Size" value="M"></label>
+          </div>
+          <label>Style preference<input name="Style Preference" value="minimal, neutral, vacation"></label>
+          <label>Urgency<input name="Urgency" value="Need it this week"></label>
+          <label>Source<input name="Source" value="Instagram"></label>
+          <label>Notes<textarea name="Notes">Open to similar pieces if beige is sold out.</textarea></label>
+          <button type="submit">Submit interest</button>
+        </form>
+      </section>
+
+      <section class="workspace">
+        <div class="toolbar">
+          <div>
+            <p class="eyebrow">Operations</p>
+            <h2>Automation Output</h2>
+          </div>
+          <button class="secondary" id="reset" type="button">Reset</button>
+        </div>
+
+        <div class="metrics">
+          <div><span id="total">0</span><small>Total buyers</small></div>
+          <div><span id="ready">0</span><small>Ready-to-buy</small></div>
+          <div><span id="emails">0</span><small>Generated emails</small></div>
+        </div>
+
+        <div class="columns">
+          <section>
+            <h3>Buyer Tracker</h3>
+            <div id="buyers" class="stack empty">No buyers yet.</div>
+          </section>
+          <section>
+            <h3>Email Outbox</h3>
+            <div id="outbox" class="stack empty">No emails yet.</div>
+          </section>
+        </div>
+
+        <section class="backbone">
+          <div class="section-heading">
+            <p class="eyebrow">Workflow</p>
+            <h2>Automation Backbone</h2>
+          </div>
+          <div class="node-canvas" aria-label="Automation workflow nodes">
+            <article class="node start">
+              <span>Webhook</span>
+              <strong>Buyer Interest</strong>
+              <small>Receives form submission</small>
+            </article>
+            <article class="node">
+              <span>Code</span>
+              <strong>Normalize + Segment</strong>
+              <small>Cleans fields, scores intent</small>
+            </article>
+            <article class="node">
+              <span>Sheet</span>
+              <strong>Save Buyer</strong>
+              <small>Records lead before messages</small>
+            </article>
+            <article class="node branch">
+              <span>Email</span>
+              <strong>Confirmation</strong>
+              <small>Sends lookbook link</small>
+            </article>
+            <article class="node branch">
+              <span>Email</span>
+              <strong>Sales Alert</strong>
+              <small>Flags priority and action</small>
+            </article>
+            <article class="node decision">
+              <span>IF</span>
+              <strong>Ready to Buy?</strong>
+              <small>Routes high-intent shoppers</small>
+            </article>
+            <article class="node">
+              <span>Wait</span>
+              <strong>Follow-up Delay</strong>
+              <small>Schedules a natural follow-up</small>
+            </article>
+            <article class="node">
+              <span>Email</span>
+              <strong>Personal Shopping Offer</strong>
+              <small>Reserve, size, or alternatives</small>
+            </article>
+            <article class="node end">
+              <span>Sheet</span>
+              <strong>Mark Offer Sent</strong>
+              <small>Updates buyer status</small>
+            </article>
+          </div>
+        </section>
+      </section>
+    </main>
+    <script src="/app.js"></script>
+  </body>
+</html>

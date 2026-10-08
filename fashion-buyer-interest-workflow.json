@@ -1,0 +1,373 @@
+{
+  "name": "Fashion Store Interested Buyer Automation",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "buyer-interest",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "0b2c7b38-b72b-4d9c-98e7-f491ee458814",
+      "name": "Buyer Interest Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -1320,
+        120
+      ],
+      "webhookId": "buyer-interest"
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $json.body ?? $json;\n\nfunction getField(candidates, fallback = '') {\n  const entries = Object.entries(raw).map(([key, value]) => [String(key).trim().toLowerCase(), value]);\n  for (const candidate of candidates) {\n    const normalized = candidate.trim().toLowerCase();\n    const found = entries.find(([key]) => key === normalized);\n    if (found) return found[1];\n  }\n  return fallback;\n}\n\nfunction text(value) {\n  return String(value ?? '').trim();\n}\n\nfunction money(value) {\n  const numeric = text(value).replace(/[^0-9.]/g, '');\n  return numeric ? Number(numeric) : 0;\n}\n\nfunction list(value) {\n  if (Array.isArray(value)) return value.map(text).filter(Boolean);\n  return text(value).split(/[,;|]/).map(text).filter(Boolean);\n}\n\nconst name = text(getField(['full name', 'name', 'customer name'], 'New buyer'));\nconst email = text(getField(['email', 'email address']));\nconst phone = text(getField(['phone', 'phone number', 'whatsapp', 'mobile']));\nconst productInterest = text(getField(['product interest', 'item', 'items', 'interested item', 'collection']));\nconst category = text(getField(['category', 'style category'], 'Fashion & lifestyle'));\nconst budget = money(getField(['budget', 'price range', 'target budget', 'spend']));\nconst preferredSizes = list(getField(['size', 'sizes', 'preferred size']));\nconst styleTags = list(getField(['style', 'style preference', 'occasion', 'vibe']));\nconst urgencyRaw = text(getField(['urgency', 'when do you need it', 'timeline'], 'browsing')).toLowerCase();\nconst source = text(getField(['source', 'how did you hear about us'], 'Interest form'));\nconst notes = text(getField(['notes', 'message', 'special request']));\n\nconst highIntentWords = ['today', 'now', 'urgent', 'this week', 'asap', 'ready', 'checkout'];\nconst highIntent = highIntentWords.some((word) => urgencyRaw.includes(word)) || budget >= 150;\nconst hasContact = Boolean(email || phone);\nconst missingSizeFlag = preferredSizes.length ? '' : 'Missing size preference - stylist follow-up needed';\nconst missingContactFlag = hasContact ? '' : 'Missing contact details - cannot follow up';\nconst segment = highIntent ? 'Ready-to-buy' : budget >= 75 ? 'Warm lead' : 'Browsing';\nconst priority = highIntent ? 'High' : budget >= 75 ? 'Medium' : 'Standard';\nconst recommendedAction = highIntent ? 'Send personal shopping offer' : 'Send lookbook and save for nurture';\nconst status = hasContact ? 'Follow-up queued' : 'Saved for review';\nconst randomDelayMinutes = Math.floor(Math.random() * 111) + 10;\n\nreturn [{\n  json: {\n    submittedAt: new Date().toISOString(),\n    name,\n    email,\n    phone,\n    productInterest,\n    category,\n    budget,\n    preferredSizes: preferredSizes.join(', '),\n    styleTags: styleTags.join(', '),\n    urgency: urgencyRaw || 'browsing',\n    source,\n    notes,\n    segment,\n    priority,\n    highIntent,\n    hasContact,\n    status,\n    recommendedAction,\n    flags: [missingSizeFlag, missingContactFlag].filter(Boolean).join('; '),\n    randomDelayMinutes\n  }\n}];"
+      },
+      "id": "4b0ca261-a806-4ac4-a724-c051149fe40d",
+      "name": "Normalize and Segment Buyer",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1100,
+        120
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $env.GOOGLE_SHEET_ID }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Interested Buyers",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Submitted At": "={{ $json.submittedAt }}",
+            "Name": "={{ $json.name }}",
+            "Email": "={{ $json.email }}",
+            "Phone": "={{ $json.phone }}",
+            "Product Interest": "={{ $json.productInterest }}",
+            "Category": "={{ $json.category }}",
+            "Budget": "={{ $json.budget }}",
+            "Preferred Sizes": "={{ $json.preferredSizes }}",
+            "Style Tags": "={{ $json.styleTags }}",
+            "Urgency": "={{ $json.urgency }}",
+            "Segment": "={{ $json.segment }}",
+            "Priority": "={{ $json.priority }}",
+            "Status": "={{ $json.status }}",
+            "Recommended Action": "={{ $json.recommendedAction }}",
+            "Flags": "={{ $json.flags }}",
+            "Source": "={{ $json.source }}",
+            "Notes": "={{ $json.notes }}"
+          }
+        },
+        "options": {}
+      },
+      "id": "3bf6b740-c47e-4f80-b08b-3a24f401be6e",
+      "name": "Save Buyer to Google Sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        -860,
+        120
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "REPLACE_WITH_GOOGLE_SHEETS_CREDENTIAL",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Normalize and Segment Buyer').item.json.email }}",
+        "subject": "We saved your picks",
+        "message": "=Hi {{ $('Normalize and Segment Buyer').item.json.name }},<br><br>Thanks for your interest in {{ $('Normalize and Segment Buyer').item.json.productInterest || 'our latest pieces' }}. We saved your preferences and will help you find the right fit.<br><br>{{ $('Normalize and Segment Buyer').item.json.preferredSizes ? '' : 'If you have a preferred size, reply with it so we can check availability faster.<br><br>' }}You can browse the current lookbook here: <a href=\"{{ $env.LOOKBOOK_LINK }}\">{{ $env.LOOKBOOK_LINK }}</a><br><br>Warmly,<br>{{ $env.STORE_NAME || 'The Store Team' }}",
+        "options": {}
+      },
+      "id": "920f13c3-f0bb-4951-8dc7-c92db33ddc4d",
+      "name": "Immediate Buyer Confirmation",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -620,
+        20
+      ],
+      "webhookId": "buyer-confirmation",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "REPLACE_WITH_GMAIL_CREDENTIAL",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $env.SALES_ALERT_EMAIL }}",
+        "subject": "=New {{ $('Normalize and Segment Buyer').item.json.priority }} Priority Buyer: {{ $('Normalize and Segment Buyer').item.json.name }}",
+        "message": "=<h2>New interested buyer</h2><p><strong>Name:</strong> {{ $('Normalize and Segment Buyer').item.json.name }}</p><p><strong>Contact:</strong> {{ $('Normalize and Segment Buyer').item.json.email || $('Normalize and Segment Buyer').item.json.phone || 'Not provided' }}</p><p><strong>Interest:</strong> {{ $('Normalize and Segment Buyer').item.json.productInterest }}</p><p><strong>Budget:</strong> {{ $('Normalize and Segment Buyer').item.json.budget }}</p><p><strong>Sizes:</strong> {{ $('Normalize and Segment Buyer').item.json.preferredSizes || 'Not provided' }}</p><p><strong>Style:</strong> {{ $('Normalize and Segment Buyer').item.json.styleTags || 'Not provided' }}</p><p><strong>Segment:</strong> {{ $('Normalize and Segment Buyer').item.json.segment }}</p><p><strong>Recommended action:</strong> {{ $('Normalize and Segment Buyer').item.json.recommendedAction }}</p><p><strong>Flags:</strong> {{ $('Normalize and Segment Buyer').item.json.flags || 'None' }}</p>",
+        "options": {}
+      },
+      "id": "a94ce426-1955-49ec-b76c-36e48f099edf",
+      "name": "Alert Sales Team",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -620,
+        220
+      ],
+      "webhookId": "sales-alert",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "REPLACE_WITH_GMAIL_CREDENTIAL",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "d156ed47-7c54-4b11-bd55-38f06d3d1f51",
+              "leftValue": "={{ $('Normalize and Segment Buyer').item.json.highIntent }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "d3340f03-b92e-4914-b720-d48460dd0da85",
+      "name": "Ready to Buy?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -360,
+        120
+      ]
+    },
+    {
+      "parameters": {
+        "amount": "={{ $('Normalize and Segment Buyer').item.json.randomDelayMinutes }}",
+        "unit": "minutes"
+      },
+      "id": "dc2eceef-50f1-42b9-8303-1900c21a7067",
+      "name": "Human-like Follow-up Delay",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -100,
+        20
+      ],
+      "webhookId": "buyer-followup-delay"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Normalize and Segment Buyer').item.json.email }}",
+        "subject": "Want us to reserve this for you?",
+        "message": "=Hi {{ $('Normalize and Segment Buyer').item.json.name }},<br><br>Your interest in {{ $('Normalize and Segment Buyer').item.json.productInterest || 'our collection' }} looks time-sensitive, so we can help you quickly.<br><br>Reply to this email or message us here to reserve, confirm sizing, or get styled alternatives: <a href=\"{{ $env.SHOPPING_ASSIST_LINK }}\">{{ $env.SHOPPING_ASSIST_LINK }}</a><br><br>Warmly,<br>{{ $env.STORE_NAME || 'The Store Team' }}",
+        "options": {}
+      },
+      "id": "65b2f057-3868-48ce-96b0-7f1f3c580a25",
+      "name": "Send Personal Shopping Offer",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        140,
+        20
+      ],
+      "webhookId": "personal-shopping-email",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "REPLACE_WITH_GMAIL_CREDENTIAL",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $env.GOOGLE_SHEET_ID }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Interested Buyers",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Email": "={{ $('Normalize and Segment Buyer').item.json.email }}",
+            "Status": "Personal shopping offer sent",
+            "Last Updated": "={{ new Date().toISOString() }}"
+          },
+          "matchingColumns": [
+            "Email"
+          ]
+        },
+        "options": {}
+      },
+      "id": "c0d1ca78-3437-44e5-b7ea-7f4557b235c7",
+      "name": "Mark Offer Sent",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        380,
+        20
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "REPLACE_WITH_GOOGLE_SHEETS_CREDENTIAL",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\"ok\":true,\"message\":\"Interest saved\",\"status\":\"{{ $('Normalize and Segment Buyer').item.json.status }}\"}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "c41d9a2d-697b-41a3-ae2c-efae74b0cd65",
+      "name": "Respond to Buyer Form",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        -360,
+        360
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Buyer Interest Webhook": {
+      "main": [
+        [
+          {
+            "node": "Normalize and Segment Buyer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize and Segment Buyer": {
+      "main": [
+        [
+          {
+            "node": "Save Buyer to Google Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save Buyer to Google Sheet": {
+      "main": [
+        [
+          {
+            "node": "Immediate Buyer Confirmation",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Alert Sales Team",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Ready to Buy?",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Respond to Buyer Form",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ready to Buy?": {
+      "main": [
+        [
+          {
+            "node": "Human-like Follow-up Delay",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Human-like Follow-up Delay": {
+      "main": [
+        [
+          {
+            "node": "Send Personal Shopping Offer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Personal Shopping Offer": {
+      "main": [
+        [
+          {
+            "node": "Mark Offer Sent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "saveExecutionProgress": true,
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "versionId": "1b087b4e-d5c3-4392-9e35-59b7b03dd601",
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "id": "fashion-buyer-interest",
+  "tags": [
+    {
+      "name": "Fashion"
+    },
+    {
+      "name": "Lifestyle"
+    },
+    {
+      "name": "Sales"
+    },
+    {
+      "name": "Automation"
+    }
+  ]
+}
