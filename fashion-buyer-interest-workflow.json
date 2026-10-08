@@ -36,12 +36,12 @@
         "operation": "append",
         "documentId": {
           "__rl": true,
-          "value": "={{ $env.GOOGLE_SHEET_ID }}",
+          "value": "1JJeV-0lKKblJNfrygcIPKhJDqV8kUCl28F1pj1AiV04",
           "mode": "id"
         },
         "sheetName": {
           "__rl": true,
-          "value": "Interested Buyers",
+          "value": "Sheet1",
           "mode": "name"
         },
         "columns": {
@@ -87,7 +87,7 @@
       "parameters": {
         "sendTo": "={{ $('Normalize and Segment Buyer').item.json.email }}",
         "subject": "We saved your picks",
-        "message": "=Hi {{ $('Normalize and Segment Buyer').item.json.name }},<br><br>Thanks for your interest in {{ $('Normalize and Segment Buyer').item.json.productInterest || 'our latest pieces' }}. We saved your preferences and will help you find the right fit.<br><br>{{ $('Normalize and Segment Buyer').item.json.preferredSizes ? '' : 'If you have a preferred size, reply with it so we can check availability faster.<br><br>' }}You can browse the current lookbook here: <a href=\"{{ $env.LOOKBOOK_LINK }}\">{{ $env.LOOKBOOK_LINK }}</a><br><br>Warmly,<br>{{ $env.STORE_NAME || 'The Store Team' }}",
+        "message": "=Hi {{ $('Normalize and Segment Buyer').item.json.name }},<br><br>Thanks for your interest in {{ $('Normalize and Segment Buyer').item.json.productInterest || 'our latest pieces' }}. We saved your preferences and will help you find the right fit.<br><br>{{ $('Normalize and Segment Buyer').item.json.preferredSizes ? '' : 'If you have a preferred size, reply with it so we can check availability faster.<br><br>' }}You can browse the current lookbook here: <a href=\"https://github.com/calina-miguel/fashion-buyer-automation\">https://github.com/calina-miguel/fashion-buyer-automation</a><br><br>Warmly,<br>Luma & Thread",
         "options": {}
       },
       "id": "920f13c3-f0bb-4951-8dc7-c92db33ddc4d",
@@ -108,7 +108,7 @@
     },
     {
       "parameters": {
-        "sendTo": "={{ $env.SALES_ALERT_EMAIL }}",
+        "sendTo": "calina.miguel@gmail.com",
         "subject": "=New {{ $('Normalize and Segment Buyer').item.json.priority }} Priority Buyer: {{ $('Normalize and Segment Buyer').item.json.name }}",
         "message": "=<h2>New interested buyer</h2><p><strong>Name:</strong> {{ $('Normalize and Segment Buyer').item.json.name }}</p><p><strong>Contact:</strong> {{ $('Normalize and Segment Buyer').item.json.email || $('Normalize and Segment Buyer').item.json.phone || 'Not provided' }}</p><p><strong>Interest:</strong> {{ $('Normalize and Segment Buyer').item.json.productInterest }}</p><p><strong>Budget:</strong> {{ $('Normalize and Segment Buyer').item.json.budget }}</p><p><strong>Sizes:</strong> {{ $('Normalize and Segment Buyer').item.json.preferredSizes || 'Not provided' }}</p><p><strong>Style:</strong> {{ $('Normalize and Segment Buyer').item.json.styleTags || 'Not provided' }}</p><p><strong>Segment:</strong> {{ $('Normalize and Segment Buyer').item.json.segment }}</p><p><strong>Recommended action:</strong> {{ $('Normalize and Segment Buyer').item.json.recommendedAction }}</p><p><strong>Flags:</strong> {{ $('Normalize and Segment Buyer').item.json.flags || 'None' }}</p>",
         "options": {}
@@ -181,7 +181,7 @@
       "parameters": {
         "sendTo": "={{ $('Normalize and Segment Buyer').item.json.email }}",
         "subject": "Want us to reserve this for you?",
-        "message": "=Hi {{ $('Normalize and Segment Buyer').item.json.name }},<br><br>Your interest in {{ $('Normalize and Segment Buyer').item.json.productInterest || 'our collection' }} looks time-sensitive, so we can help you quickly.<br><br>Reply to this email or message us here to reserve, confirm sizing, or get styled alternatives: <a href=\"{{ $env.SHOPPING_ASSIST_LINK }}\">{{ $env.SHOPPING_ASSIST_LINK }}</a><br><br>Warmly,<br>{{ $env.STORE_NAME || 'The Store Team' }}",
+        "message": "=Hi {{ $('Normalize and Segment Buyer').item.json.name }},<br><br>Your interest in {{ $('Normalize and Segment Buyer').item.json.productInterest || 'our collection' }} looks time-sensitive, so we can help you quickly.<br><br>Reply to this email or message us here to reserve, confirm sizing, or get styled alternatives: <a href=\"https://www.instagram.com/p/DeILJlkALF6/?stkn=YmhnNzBpMzMxNzA1\">https://www.instagram.com/p/DeILJlkALF6/?stkn=YmhnNzBpMzMxNzA1</a><br><br>Warmly,<br>Luma & Thread",
         "options": {}
       },
       "id": "65b2f057-3868-48ce-96b0-7f1f3c580a25",
@@ -205,12 +205,12 @@
         "operation": "appendOrUpdate",
         "documentId": {
           "__rl": true,
-          "value": "={{ $env.GOOGLE_SHEET_ID }}",
+          "value": "1JJeV-0lKKblJNfrygcIPKhJDqV8kUCl28F1pj1AiV04",
           "mode": "id"
         },
         "sheetName": {
           "__rl": true,
-          "value": "Interested Buyers",
+          "value": "Sheet1",
           "mode": "name"
         },
         "columns": {
