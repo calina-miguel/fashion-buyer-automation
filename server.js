@@ -7,6 +7,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const dataDir = path.join(__dirname, 'store-data');
 const buyersPath = path.join(dataDir, 'interested-buyers.json');
 const emailsPath = path.join(dataDir, 'email-outbox.json');
+const n8nWebhookUrl = process.env.N8N_WEBHOOK_URL || 'https://devtones.app.n8n.cloud/webhook/buyer-interest';
 
 const app = express();
 app.use(express.json());
@@ -118,6 +119,29 @@ app.post('/webhook/buyer-interest', async (req, res) => {
   const buyers = await readJson(buyersPath, []);
   const outbox = await readJson(emailsPath, []);
   const emails = buildEmails(buyer);
+  let workflow = {
+    ok: false,
+    message: 'Workflow endpoint not reached'
+  };
+
+  try {
+    const response = await fetch(n8nWebhookUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(req.body)
+    });
+    const text = await response.text();
+    workflow = {
+      ok: response.ok,
+      status: response.status,
+      message: text
+    };
+  } catch (error) {
+    workflow = {
+      ok: false,
+      message: error instanceof Error ? error.message : 'Workflow request failed'
+    };
+  }
 
   await writeJson(buyersPath, [buyer, ...buyers]);
   await writeJson(emailsPath, [...emails, ...outbox]);
@@ -126,6 +150,7 @@ app.post('/webhook/buyer-interest', async (req, res) => {
     ok: true,
     message: 'Interest saved',
     status: buyer.status,
+    workflow,
     buyer,
     emails
   });

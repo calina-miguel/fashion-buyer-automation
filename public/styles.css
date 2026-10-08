@@ -127,6 +127,14 @@ button.secondary {
   background: var(--soft);
 }
 
+.status {
+  min-height: 20px;
+  margin: 0;
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 800;
+}
+
 .workspace {
   padding: 34px;
 }

@@ -18,7 +18,7 @@ This is a portable n8n workflow for a fashion and lifestyle store: an end-to-end
 ## Files
 
 - `fashion-buyer-interest-workflow.json` - n8n workflow export.
-- `server.js` - local server that runs the buyer intake flow without needing live credentials.
+- `server.js` - local server that forwards buyer intake submissions to the live n8n webhook and keeps a local tracker for the page.
 - `public/` - buyer form, live tracker, outbox, and workflow backbone view.
 
 ## Local Setup
@@ -51,6 +51,14 @@ store-data/interested-buyers.json
 store-data/email-outbox.json
 ```
 
+The local form posts to this workflow by default:
+
+```text
+https://devtones.app.n8n.cloud/webhook/buyer-interest
+```
+
+Override it with `N8N_WEBHOOK_URL` when pointing the form at another n8n workflow.
+
 ## Required Setup
 
 Create a Google Sheet named `Interested Buyers` with these columns:
@@ -79,6 +87,7 @@ Last Updated
 Configure these n8n environment variables:
 
 ```text
+N8N_WEBHOOK_URL=https://your-n8n-domain/webhook/buyer-interest
 GOOGLE_SHEET_ID=your_google_sheet_id
 SALES_ALERT_EMAIL=sales@yourstore.com
 LOOKBOOK_LINK=https://yourstore.com/lookbook
@@ -90,7 +99,7 @@ After importing the workflow into n8n:
 
 1. Replace the placeholder Google Sheets credential.
 2. Replace the placeholder Gmail credential.
-3. Activate the workflow.
+3. Publish the workflow.
 4. Point your form action to the production webhook URL for `Buyer Interest Webhook`.
 
 ## Suggested Form Fields
