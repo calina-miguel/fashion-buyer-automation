@@ -6,7 +6,7 @@ Create a short screen recording that shows how EyePik Inc. captures interested f
 
 ## Recommended Length
 
-60 to 90 seconds.
+30 to 45 seconds.
 
 ## Recording Setup
 
@@ -44,6 +44,7 @@ On-screen action:
 
 - Click `Submit interest`.
 - Pause on the status message: `Live workflow accepted the buyer submission.`
+- Show the production webhook response: `{"message":"Workflow was started"}`.
 
 ### 3. Show Local Output
 
@@ -70,7 +71,7 @@ Voiceover:
 On-screen action:
 
 - Open the n8n canvas.
-- Slowly pan across the nodes from left to right.
+- Keep the canvas steady in a 16:9 frame.
 - Pause briefly on:
   - `Buyer Interest Webhook`
   - `Normalize and Segment Buyer`
@@ -117,7 +118,23 @@ Use this if recording without voice:
 5. Ready-to-buy shoppers enter a personal shopping follow-up path.
 6. Google Sheets stays updated for the team.
 
-## LinkedIn Post Copy
+## n8n Editor Note
+
+The orange `Execute workflow` button listens for the temporary test webhook URL. If the editor says `Waiting for you to call the Test URL`, send the buyer payload to the test URL shown inside the webhook node while the listener is active.
+
+The published workflow uses:
+
+```text
+https://devtones.app.n8n.cloud/webhook/buyer-interest
+```
+
+The production success response is:
+
+```json
+{"message":"Workflow was started"}
+```
+
+## Post Copy
 
 Managing interested buyers should not feel like chasing scattered messages.
 

@@ -20,7 +20,7 @@ This is a portable n8n workflow for a fashion and lifestyle store: an end-to-end
 - `fashion-buyer-interest-workflow.json` - n8n workflow export.
 - `server.js` - local server that forwards buyer intake submissions to the live n8n webhook and keeps a local tracker for the page.
 - `public/` - buyer form, live tracker, outbox, and workflow backbone view.
-- `VIDEO_WALKTHROUGH.md` - recording script, shot list, and LinkedIn post copy.
+- `VIDEO_WALKTHROUGH.md` - recording script, shot list, and publishing copy.
 
 ## Local Setup
 
@@ -121,9 +121,9 @@ Source
 Notes
 ```
 
-## Test Payload
+## Verification Payload
 
-Send this to the webhook in test mode:
+Send this to the production webhook:
 
 ```json
 {
@@ -139,6 +139,22 @@ Send this to the webhook in test mode:
   "Source": "Instagram",
   "Notes": "Open to similar pieces if beige is sold out."
 }
+```
+
+## n8n Editor Execution
+
+The orange `Execute workflow` button in the n8n editor listens on the temporary test webhook URL. If the canvas says `Waiting for you to call the Test URL`, send the payload to the test URL shown in the webhook node while that listener is active.
+
+For the published workflow, use:
+
+```text
+https://devtones.app.n8n.cloud/webhook/buyer-interest
+```
+
+A successful production call returns:
+
+```json
+{"message":"Workflow was started"}
 ```
 
 ## Upgrade Ideas

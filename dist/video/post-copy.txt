@@ -1,0 +1,11 @@
+Interested buyers move fast. The sales workflow has to move with them.
+
+For EyePik Inc., this automation turns each fashion and lifestyle inquiry into a clean sales record:
+
+Buyer form -> n8n -> Google Sheets -> Gmail -> follow-up path
+
+It captures the shopper's product interest, budget, size, style preferences, and urgency; segments intent; flags missing details; alerts the sales team; and routes ready-to-buy buyers toward a personal shopping offer.
+
+Built with n8n, Google Sheets, and Gmail.
+
+#n8n #workflowautomation #businessautomation #retailautomation #fashiontech #nocode #salesautomation

@@ -1,11 +1,8 @@
 node_modules/
 store-data/
-demo-data/
-dist/linkedin/frames/
-dist/linkedin/canvas-frames/
-dist/linkedin/frames.txt
-dist/linkedin/eyepik-linkedin-walkthrough.mp4
-dist/linkedin/eyepik-canvas-walkthrough-16x9.mp4
+sample-data/
+dist/video/frames/
+dist/video/frames.txt
 .env
 .DS_Store
 Thumbs.db
