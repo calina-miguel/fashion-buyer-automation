@@ -24,7 +24,7 @@ Set these in n8n environment variables or replace them directly in the nodes:
 
 ```text
 GOOGLE_SHEET_ID=your_google_sheet_id
-SALES_ALERT_EMAIL=sales@example.com
+SALES_ALERT_EMAIL=sales@yourstore.com
 LOOKBOOK_LINK=https://yourstore.com/lookbook
 SHOPPING_ASSIST_LINK=https://wa.me/your-number
 STORE_NAME=Your Store Name

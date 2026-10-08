@@ -36,7 +36,7 @@ Open:
 http://localhost:3210
 ```
 
-For a walkthrough:
+For an operating check:
 
 1. Start on the form with the prefilled high-intent shopper.
 2. Click `Submit interest`.
@@ -80,7 +80,7 @@ Configure these n8n environment variables:
 
 ```text
 GOOGLE_SHEET_ID=your_google_sheet_id
-SALES_ALERT_EMAIL=sales@example.com
+SALES_ALERT_EMAIL=sales@yourstore.com
 LOOKBOOK_LINK=https://yourstore.com/lookbook
 SHOPPING_ASSIST_LINK=https://wa.me/your-number
 STORE_NAME=Your Store Name

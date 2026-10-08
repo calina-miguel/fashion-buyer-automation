@@ -80,7 +80,7 @@ async function writeJson(file, value) {
 
 function buildEmails(buyer) {
   const storeName = process.env.STORE_NAME || 'Luma & Thread';
-  const lookbook = process.env.LOOKBOOK_LINK || 'https://example.com/lookbook';
+  const lookbook = process.env.LOOKBOOK_LINK || 'https://yourstore.com/lookbook';
   const shoppingAssist = process.env.SHOPPING_ASSIST_LINK || 'https://wa.me/630000000000';
   const emails = [
     {
@@ -92,7 +92,7 @@ function buildEmails(buyer) {
     },
     {
       type: 'sales-alert',
-      to: process.env.SALES_ALERT_EMAIL || 'sales@example.com',
+      to: process.env.SALES_ALERT_EMAIL || 'sales@yourstore.com',
       subject: `New ${buyer.priority} Priority Buyer: ${buyer.name}`,
       body: `${buyer.name} is interested in ${buyer.productInterest || 'unspecified items'}. Segment: ${buyer.segment}. Budget: ${buyer.budget}. Sizes: ${buyer.preferredSizes || 'not provided'}. Action: ${buyer.recommendedAction}. Flags: ${buyer.flags || 'None'}`,
       createdAt: new Date().toISOString()
