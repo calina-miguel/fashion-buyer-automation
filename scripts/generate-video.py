@@ -1,247 +1,196 @@
 from pathlib import Path
-import math
+import json
 import subprocess
 
 from PIL import Image, ImageDraw, ImageFont
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SOURCE_CANDIDATES = [
-    Path(r"C:\Users\Miguel\AppData\Local\Temp\codex-clipboard-bd483857-205f-4d0c-af07-d253b0cb1de2.png"),
-    ROOT / "n8n-workflow-imported.png",
-]
 OUT_DIR = ROOT / "dist" / "video"
 FRAMES_DIR = OUT_DIR / "frames"
+CANVAS = OUT_DIR / "dom-canvas.png"
+RECTS = OUT_DIR / "dom-rects.json"
 OUTPUT = OUT_DIR / "eyepik-workflow-run-16x9.mp4"
 POST_COPY = OUT_DIR / "post-copy.txt"
 
 W, H = 1920, 1080
 FPS = 30
+CROP_TOP = 54
 
 
 def font(size, bold=False):
-    names = [
+    fonts = [
         "C:/Windows/Fonts/segoeuib.ttf" if bold else "C:/Windows/Fonts/segoeui.ttf",
         "C:/Windows/Fonts/arialbd.ttf" if bold else "C:/Windows/Fonts/arial.ttf",
     ]
-    for name in names:
-        if Path(name).exists():
-            return ImageFont.truetype(name, size)
+    for file in fonts:
+        if Path(file).exists():
+            return ImageFont.truetype(file, size)
     return ImageFont.load_default()
 
 
-FONT_28 = font(28)
-FONT_34 = font(34, True)
-FONT_42 = font(42, True)
+FONT_20 = font(20)
+FONT_24 = font(24)
+FONT_30 = font(30, True)
+FONT_40 = font(40, True)
 
 
-def find_source():
-    for path in SOURCE_CANDIDATES:
-        if path.exists():
-            return path
-    raise FileNotFoundError("No workflow canvas image found.")
+STEPS = [
+    ("Buyer Interest Webhook", "Buyer interest received", "Live buyer submission hits the published webhook."),
+    ("Normalize and Segment Buyer", "Fields normalized", "The intake is cleaned and intent is classified."),
+    ("Save Buyer to Google Sheet", "Buyer saved", "The tracker receives a structured buyer record."),
+    ("Immediate Buyer Confirmation", "Confirmation sent", "The shopper gets an immediate response."),
+    ("Alert Sales Team", "Sales team alerted", "The sales team gets product, budget, size, and urgency."),
+    ("Ready to Buy?", "Intent branch selected", "Ready-to-buy shoppers continue to the follow-up path."),
+    ("Human-like Follow-up Delay", "Follow-up delay", "The next touchpoint waits before sending."),
+    ("Send Personal Shopping Offer", "Offer sent", "The shopper receives the personal shopping next step."),
+    ("Mark Offer Sent", "Tracker updated", "The record is marked after the follow-up is sent."),
+]
 
 
-def cover_canvas(source):
-    img = Image.open(source).convert("RGB")
-    scale = max(W / img.width, H / img.height)
-    resized = img.resize((round(img.width * scale), round(img.height * scale)), Image.Resampling.LANCZOS)
-    x = (resized.width - W) // 2
-    y = (resized.height - H) // 2
-    return resized.crop((x, y, x + W, y + H))
+def load_capture():
+    if not CANVAS.exists() or not RECTS.exists():
+        raise FileNotFoundError("Run DOM capture first: dist/video/dom-canvas.png and dom-rects.json are required.")
+    source = Image.open(CANVAS).convert("RGB")
+    data = json.loads(RECTS.read_text(encoding="utf-8"))
+    return source, data
 
 
-def rounded_rect(draw, box, radius, fill, outline=None, width=1):
-    draw.rounded_rectangle(box, radius=radius, fill=fill, outline=outline, width=width)
+def fit_canvas(source):
+    source = source.crop((0, CROP_TOP, source.width, source.height))
+    scale = min(W / source.width, H / source.height)
+    resized = source.resize((round(source.width * scale), round(source.height * scale)), Image.Resampling.LANCZOS)
+    frame = Image.new("RGB", (W, H), (13, 13, 14))
+    ox = (W - resized.width) // 2
+    oy = (H - resized.height) // 2
+    frame.paste(resized, (ox, oy))
+    return frame, scale, ox, oy
 
 
-def text_size(draw, text, fnt):
-    box = draw.textbbox((0, 0), text, font=fnt)
-    return box[2] - box[0], box[3] - box[1]
+def map_rect(rect, scale, ox, oy):
+    x1 = round(rect["x"] * scale + ox)
+    y1 = round((rect["y"] - CROP_TOP) * scale + oy)
+    x2 = round((rect["x"] + rect["width"]) * scale + ox)
+    y2 = round((rect["y"] + rect["height"] - CROP_TOP) * scale + oy)
+    return x1, y1, x2, y2
 
 
-def label(draw, xy, title, body=None):
-    x, y = xy
-    pad_x, pad_y = 26, 20
-    tw, th = text_size(draw, title, FONT_42)
-    bw, bh = (0, 0)
-    if body:
-        bw, bh = text_size(draw, body, FONT_28)
-    width = max(tw, bw) + pad_x * 2
-    height = th + pad_y * 2 + (bh + 10 if body else 0)
-    rounded_rect(draw, (x, y, x + width, y + height), 14, (9, 12, 18, 232), (53, 214, 135), 2)
-    draw.text((x + pad_x, y + pad_y - 3), title, font=FONT_42, fill=(255, 255, 255))
-    if body:
-        draw.text((x + pad_x, y + pad_y + th + 10), body, font=FONT_28, fill=(206, 218, 226))
+def node_box(label_rect, scale):
+    x1, y1, x2, y2 = label_rect
+    cx = (x1 + x2) // 2
+    # n8n node icons sit directly above their text labels. Size is derived from the live viewport scale.
+    icon_w = round(84 * scale)
+    icon_h = round(84 * scale)
+    top = y1 - round(100 * scale)
+    return cx - icon_w // 2, top, cx + icon_w // 2, top + icon_h
 
 
-def status_panel(draw, lines):
-    x, y, width = 1080, 146, 650
-    line_h = 42
-    height = 78 + len(lines) * line_h
-    rounded_rect(draw, (x, y, x + width, y + height), 18, (12, 15, 21, 238), (255, 106, 0), 2)
-    draw.ellipse((x + 28, y + 28, x + 50, y + 50), fill=(29, 185, 84))
-    draw.text((x + 66, y + 19), "Workflow run verified", font=FONT_34, fill=(255, 255, 255))
-    for i, line in enumerate(lines):
-        draw.text((x + 34, y + 76 + i * line_h), line, font=FONT_28, fill=(221, 231, 238))
+def round_rect(draw, rect, radius, fill, outline=None, width=1):
+    draw.rounded_rectangle(rect, radius=radius, fill=fill, outline=outline, width=width)
 
 
-def highlight(draw, box, color=(255, 106, 0), label_text=None):
-    x1, y1, x2, y2 = box
-    for expand, alpha in [(24, 55), (14, 90), (4, 255)]:
-        draw.rounded_rectangle(
-            (x1 - expand, y1 - expand, x2 + expand, y2 + expand),
-            radius=18,
-            outline=color + (alpha,),
-            width=5,
-        )
-    if label_text:
-        draw.text((x1 - 20, y1 - 70), label_text, font=FONT_34, fill=(255, 255, 255))
+def check(draw, center, active):
+    x, y = center
+    r = 24 if active else 19
+    fill = (31, 185, 84, 255) if active else (31, 185, 84, 205)
+    outline = (214, 255, 229, 255) if active else (31, 185, 84, 240)
+    draw.ellipse((x - r, y - r, x + r, y + r), fill=fill, outline=outline, width=3)
+    draw.line((x - 10, y, x - 3, y + 8, x + 13, y - 11), fill=(255, 255, 255, 255), width=4)
 
 
-def dim_and_highlight(base, boxes, title, body, status_lines=None):
-    frame = base.convert("RGBA")
-    overlay = Image.new("RGBA", (W, H), (0, 0, 0, 108))
-    frame = Image.alpha_composite(frame, overlay)
-    draw = ImageDraw.Draw(frame, "RGBA")
-    for box in boxes:
-        highlight(draw, box)
-    label(draw, (96, 96), title, body)
-    if status_lines:
-        status_panel(draw, status_lines)
-    return frame.convert("RGB")
+def lower_third(draw, title, body):
+    rect = (112, 860, 1808, 994)
+    round_rect(draw, rect, 18, (8, 10, 14, 238), (31, 185, 84), 2)
+    draw.text((148, 884), title, font=FONT_40, fill=(255, 255, 255))
+    draw.text((148, 936), body, font=FONT_24, fill=(220, 228, 235))
 
 
-def full_frame(base, title, body, status_lines=None):
-    frame = base.convert("RGBA")
-    draw = ImageDraw.Draw(frame, "RGBA")
-    label(draw, (96, 96), title, body)
-    if status_lines:
-        status_panel(draw, status_lines)
-    return frame.convert("RGB")
-
-
-def make_frames(base):
-    # Coordinates are tuned to the supplied 16:9 n8n canvas screenshot after cover-scaling.
-    webhook = (424, 510, 520, 604)
-    normalize = (610, 510, 702, 604)
-    sheet = (770, 510, 864, 604)
-    confirm = (920, 450, 1010, 544)
-    alert = (920, 608, 1010, 702)
-    decision = (1090, 510, 1180, 604)
-    delay = (1262, 452, 1352, 544)
-    offer = (1425, 452, 1515, 544)
-    mark_sent = (1588, 452, 1678, 544)
-
-    scenes = [
-        (
-            full_frame(
-                base,
-                "EyePik Inc. Interested Buyer Automation",
-                "Published workflow ready for live buyer intake.",
-            ),
-            3.0,
-        ),
-        (
-            dim_and_highlight(
-                base,
-                [webhook],
-                "Buyer interest submitted",
-                "The intake form sends a POST request to the live n8n webhook.",
-                ["POST /webhook/buyer-interest", "Response: {\"message\":\"Workflow was started\"}"],
-            ),
-            5.0,
-        ),
-        (
-            dim_and_highlight(
-                base,
-                [normalize, sheet],
-                "Buyer record prepared",
-                "Field names are cleaned, intent is segmented, then the buyer is saved.",
-                ["Segment: Ready-to-buy", "Priority: High", "Tracker update accepted"],
-            ),
-            5.0,
-        ),
-        (
-            dim_and_highlight(
-                base,
-                [confirm, alert],
-                "Confirmation and sales alert sent",
-                "The shopper gets reassurance while the sales team receives the full context.",
-                ["Shopper confirmation queued", "Sales alert queued", "Product, budget, size, urgency included"],
-            ),
-            5.0,
-        ),
-        (
-            dim_and_highlight(
-                base,
-                [decision],
-                "Ready-to-buy branch selected",
-                "High-intent buyers continue into a personal shopping follow-up path.",
-                ["Condition matched", "Buyer routed to follow-up"],
-            ),
-            4.0,
-        ),
-        (
-            dim_and_highlight(
-                base,
-                [delay, offer, mark_sent],
-                "Follow-up path completed",
-                "The offer is sent after a natural delay and the tracker is updated.",
-                ["Personal shopping offer queued", "Offer status marked sent", "Verified Oct 8, 2026"],
-            ),
-            6.0,
-        ),
-        (
-            full_frame(
-                base,
-                "Live workflow verified",
-                "Form -> n8n -> Google Sheets -> Gmail -> follow-up path.",
-                ["Production webhook accepted the buyer submission", "Workflow run returned: started"],
-            ),
-            4.0,
-        ),
+def run_panel(draw, step, total):
+    rect = (1232, 136, 1758, 320)
+    round_rect(draw, rect, 18, (8, 10, 14, 238), (255, 106, 0), 2)
+    draw.ellipse((1262, 166, 1288, 192), fill=(31, 185, 84))
+    draw.text((1304, 157), "Published workflow accepted", font=FONT_30, fill=(255, 255, 255))
+    lines = [
+        "POST /webhook/buyer-interest",
+        "Response: Workflow was started",
+        f"Execution path: {step}/{total}",
     ]
+    for i, line in enumerate(lines):
+        draw.text((1266, 214 + i * 32), line, font=FONT_20, fill=(221, 229, 236))
+
+
+def make_nodes(rect_data, scale, ox, oy):
+    labels = rect_data["labels"]
+    nodes = {}
+    for label, _, _ in STEPS:
+        label_rect = map_rect(labels[label], scale, ox, oy)
+        icon = node_box(label_rect, scale)
+        nodes[label] = {
+            "label": label_rect,
+            "icon": icon,
+            "center": ((icon[0] + icon[2]) // 2, (icon[1] + icon[3]) // 2),
+            "badge": (icon[2] - 2, icon[1] + 4),
+        }
+    return nodes
+
+
+def scene(base, nodes, step_index):
+    active_label, title, body = STEPS[step_index]
+    frame = base.convert("RGBA")
+    frame = Image.alpha_composite(frame, Image.new("RGBA", (W, H), (0, 0, 0, 18)))
+    draw = ImageDraw.Draw(frame, "RGBA")
+
+    for i, (label, _, _) in enumerate(STEPS):
+        n = nodes[label]
+        done = i < step_index
+        active = i == step_index
+        if active:
+            x1, y1, x2, y2 = n["icon"]
+            draw.rounded_rectangle((x1 - 8, y1 - 8, x2 + 8, y2 + 8), radius=16, outline=(31, 185, 84, 255), width=5)
+        if done or active:
+            check(draw, n["badge"], active)
+
+    run_panel(draw, step_index + 1, len(STEPS))
+    lower_third(draw, title, body)
+    return frame.convert("RGB")
+
+
+def write_frames():
+    source, rect_data = load_capture()
+    base, scale, ox, oy = fit_canvas(source)
+    nodes = make_nodes(rect_data, scale, ox, oy)
 
     FRAMES_DIR.mkdir(parents=True, exist_ok=True)
     for old in FRAMES_DIR.glob("frame-*.png"):
         old.unlink()
 
-    idx = 0
-    total_frames = sum(round(scene[1] * FPS) for scene in scenes)
-    for image, seconds in scenes:
-        count = round(seconds * FPS)
-        for i in range(count):
-            # Subtle opacity pulse on highlighted scenes, with no camera shake.
-            frame = image.copy().convert("RGBA")
-            pulse = 0.5 + 0.5 * math.sin(i / FPS * math.pi * 2)
-            draw = ImageDraw.Draw(frame, "RGBA")
-            progress_w = round(W * (idx / max(1, total_frames)))
-            draw.rectangle((0, H - 8, progress_w, H), fill=(255, 106, 0, 210))
-            if pulse > 0.92:
-                glow = Image.new("RGBA", (W, H), (255, 106, 0, 0))
-                frame = Image.alpha_composite(frame, glow)
-            frame.convert("RGB").save(FRAMES_DIR / f"frame-{idx:04d}.png", quality=95)
-            idx += 1
+    index = 0
+    for step_index in range(len(STEPS)):
+        frame = scene(base, nodes, step_index)
+        for _ in range(round(2.8 * FPS)):
+            frame.save(FRAMES_DIR / f"frame-{index:04d}.png", quality=95)
+            index += 1
 
 
-def encode_video():
-    cmd = [
-        "ffmpeg",
-        "-y",
-        "-framerate",
-        str(FPS),
-        "-i",
-        str(FRAMES_DIR / "frame-%04d.png"),
-        "-c:v",
-        "libx264",
-        "-pix_fmt",
-        "yuv420p",
-        "-movflags",
-        "+faststart",
-        str(OUTPUT),
-    ]
-    subprocess.run(cmd, check=True)
+def encode():
+    subprocess.run(
+        [
+            "ffmpeg",
+            "-y",
+            "-framerate",
+            str(FPS),
+            "-i",
+            str(FRAMES_DIR / "frame-%04d.png"),
+            "-c:v",
+            "libx264",
+            "-pix_fmt",
+            "yuv420p",
+            "-movflags",
+            "+faststart",
+            str(OUTPUT),
+        ],
+        check=True,
+    )
 
 
 def write_post_copy():
@@ -268,14 +217,10 @@ def write_post_copy():
 
 def main():
     OUT_DIR.mkdir(parents=True, exist_ok=True)
-    source = find_source()
-    base = cover_canvas(source)
-    make_frames(base)
-    encode_video()
+    write_frames()
+    encode()
     write_post_copy()
-    print(f"source={source}")
     print(f"video={OUTPUT}")
-    print(f"post_copy={POST_COPY}")
 
 
 if __name__ == "__main__":

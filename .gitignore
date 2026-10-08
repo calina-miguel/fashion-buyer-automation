@@ -3,6 +3,8 @@ store-data/
 sample-data/
 dist/video/frames/
 dist/video/frames.txt
+dist/video/dom-canvas.png
+dist/video/dom-rects.json
 .env
 .DS_Store
 Thumbs.db
