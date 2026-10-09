@@ -13,7 +13,7 @@
   <body>
     <main>
       <section class="hero">
-        <div class="hero-copy">
+        <div class="hero-copy reveal" data-parallax="0.08">
           <p class="eyebrow">EyePik Inc.</p>
           <h1>Interested Buyer Automation</h1>
           <p>
@@ -26,13 +26,15 @@
             <a href="https://github.com/calina-miguel/fashion-buyer-automation">Open repository</a>
           </div>
         </div>
-        <video controls playsinline poster="assets/workflow-canvas.png">
-          <source src="assets/workflow-run.mp4" type="video/mp4">
-        </video>
+        <div class="video-stage reveal" data-parallax="-0.05">
+          <video controls playsinline poster="assets/workflow-poster.png">
+            <source src="assets/workflow-run.mp4" type="video/mp4">
+          </video>
+        </div>
       </section>
 
-      <section class="section">
-        <div>
+      <section class="section reveal">
+        <div class="section-copy">
           <p class="eyebrow">Live run</p>
           <h2>Published workflow accepted</h2>
           <p>
@@ -45,9 +47,11 @@
 {"message":"Workflow was started"}</code></pre>
       </section>
 
-      <section class="split">
-        <img src="assets/buyer-desk.png" alt="Buyer desk with tracker and email outbox">
-        <div>
+      <section class="split reveal">
+        <div class="image-stage" data-parallax="-0.035">
+          <img src="assets/buyer-desk.png" alt="Buyer desk with tracker and email outbox">
+        </div>
+        <div class="section-copy" data-parallax="0.04">
           <p class="eyebrow">Buyer desk</p>
           <h2>One intake point for the sales team</h2>
           <p>
@@ -58,7 +62,7 @@
         </div>
       </section>
 
-      <section class="process">
+      <section class="process reveal">
         <p class="eyebrow">Workflow path</p>
         <h2>Buyer form to follow-up</h2>
         <ol>
@@ -70,5 +74,6 @@
         </ol>
       </section>
     </main>
+    <script src="script.js"></script>
   </body>
 </html>

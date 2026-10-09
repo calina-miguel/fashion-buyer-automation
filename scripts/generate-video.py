@@ -144,9 +144,6 @@ def scene(base, nodes, step_index):
         n = nodes[label]
         done = i < step_index
         active = i == step_index
-        if active:
-            x1, y1, x2, y2 = n["icon"]
-            draw.rounded_rectangle((x1 - 8, y1 - 8, x2 + 8, y2 + 8), radius=16, outline=(31, 185, 84, 255), width=5)
         if done or active:
             check(draw, n["badge"], active)
 
