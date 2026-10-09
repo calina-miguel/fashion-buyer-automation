@@ -451,9 +451,9 @@ pre {
 .process li {
   position: relative;
   min-height: 160px;
-  border: 1px solid var(--line);
+  border: 0;
   border-radius: 8px;
-  background: var(--paper);
+  background: transparent;
   overflow: hidden;
 }
 
@@ -486,8 +486,7 @@ pre {
 }
 
 .process li.is-selected {
-  border-color: rgba(47, 111, 115, 0.48);
-  box-shadow: 0 18px 44px rgba(47, 111, 115, 0.12);
+  box-shadow: none;
 }
 
 .reveal {
