@@ -70,8 +70,8 @@ def fit_canvas(source):
 
 def brand_topbar(frame):
     draw = ImageDraw.Draw(frame, "RGBA")
-    draw.rectangle((480, 22, 850, 52), fill=(32, 33, 33, 255))
-    draw.text((487, 25), "Luma & Thread Interested Buyer Automation", font=FONT_18_BOLD, fill=(244, 244, 245))
+    draw.rectangle((450, 18, 950, 58), fill=(32, 33, 33, 255))
+    draw.text((456, 25), "Luma & Thread Interested Buyer Automation", font=FONT_18_BOLD, fill=(244, 244, 245))
     return frame
 
 
