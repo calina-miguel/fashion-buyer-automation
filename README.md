@@ -22,7 +22,7 @@ This is a portable n8n workflow for a fashion and lifestyle store: an end-to-end
 - `public/` - buyer form, live tracker, outbox, and workflow backbone view.
 - `VIDEO_WALKTHROUGH.md` - recording script, shot list, and publishing copy.
 - `docs/` - public presentation page for GitHub Pages.
-- `dist/presentation/eyepik-interested-buyer-automation.pptx` - editable PowerPoint deck.
+- `dist/presentation/luma-thread-interested-buyer-automation.pptx` - editable PowerPoint deck.
 
 ## Local Setup
 

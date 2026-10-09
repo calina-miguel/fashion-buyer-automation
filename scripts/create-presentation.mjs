@@ -11,7 +11,7 @@ const RUNTIME_PYTHON =
 
 const TMP_DIR = path.join(workspaceDir, ".presentation-build");
 const OUT_DIR = path.join(workspaceDir, "dist", "presentation");
-const FINAL_PPTX = path.join(OUT_DIR, "eyepik-interested-buyer-automation.pptx");
+const FINAL_PPTX = path.join(OUT_DIR, "luma-thread-interested-buyer-automation.pptx");
 const ASSET_DIR = path.join(OUT_DIR, "assets");
 
 const W = 1280;
@@ -109,7 +109,7 @@ async function build() {
   {
     const slide = presentation.slides.add();
     slide.background.fill = dark;
-    addText(slide, "EyePik Inc.", { left: 70, top: 58, width: 280, height: 34 }, {
+    addText(slide, "Luma & Thread", { left: 70, top: 58, width: 280, height: 34 }, {
       fontSize: 22,
       bold: true,
       color: "e8efe9",
@@ -340,7 +340,7 @@ async function build() {
     ],
     fontPolicy: { basis: "design", families: [FONT, "Consolas"] },
     verifyArtifactToolImport: true,
-    receiptPath: path.join(stagingDir, "eyepik-presentation.validation.json"),
+    receiptPath: path.join(stagingDir, "luma-thread-presentation.validation.json"),
   });
 
   console.log(FINAL_PPTX);

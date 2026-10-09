@@ -10,7 +10,7 @@ OUT_DIR = ROOT / "dist" / "video"
 FRAMES_DIR = OUT_DIR / "frames"
 CANVAS = OUT_DIR / "dom-canvas.png"
 RECTS = OUT_DIR / "dom-rects.json"
-OUTPUT = OUT_DIR / "eyepik-workflow-run-16x9.mp4"
+OUTPUT = OUT_DIR / "luma-thread-workflow-run-16x9.mp4"
 POST_COPY = OUT_DIR / "post-copy.txt"
 
 W, H = 1920, 1080
@@ -33,6 +33,7 @@ FONT_20 = font(20)
 FONT_24 = font(24)
 FONT_30 = font(30, True)
 FONT_40 = font(40, True)
+FONT_18_BOLD = font(18, True)
 
 
 STEPS = [
@@ -67,6 +68,13 @@ def fit_canvas(source):
     return frame, scale, ox, oy
 
 
+def brand_topbar(frame):
+    draw = ImageDraw.Draw(frame, "RGBA")
+    draw.rectangle((480, 22, 850, 52), fill=(32, 33, 33, 255))
+    draw.text((487, 25), "Luma & Thread Interested Buyer Automation", font=FONT_18_BOLD, fill=(244, 244, 245))
+    return frame
+
+
 def map_rect(rect, scale, ox, oy):
     x1 = round(rect["x"] * scale + ox)
     y1 = round((rect["y"] - CROP_TOP) * scale + oy)
@@ -91,11 +99,11 @@ def round_rect(draw, rect, radius, fill, outline=None, width=1):
 
 def check(draw, center, active):
     x, y = center
-    r = 24 if active else 19
+    r = 16 if active else 13
     fill = (31, 185, 84, 255) if active else (31, 185, 84, 205)
     outline = (214, 255, 229, 255) if active else (31, 185, 84, 240)
-    draw.ellipse((x - r, y - r, x + r, y + r), fill=fill, outline=outline, width=3)
-    draw.line((x - 10, y, x - 3, y + 8, x + 13, y - 11), fill=(255, 255, 255, 255), width=4)
+    draw.ellipse((x - r, y - r, x + r, y + r), fill=fill, outline=outline, width=2)
+    draw.line((x - 7, y, x - 2, y + 5, x + 8, y - 7), fill=(255, 255, 255, 255), width=3)
 
 
 def lower_third(draw, title, body):
@@ -155,6 +163,7 @@ def scene(base, nodes, step_index):
 def write_frames():
     source, rect_data = load_capture()
     base, scale, ox, oy = fit_canvas(source)
+    base = brand_topbar(base)
     nodes = make_nodes(rect_data, scale, ox, oy)
 
     FRAMES_DIR.mkdir(parents=True, exist_ok=True)
@@ -196,7 +205,7 @@ def write_post_copy():
             [
                 "Interested buyers move fast. The sales workflow has to move with them.",
                 "",
-                "For EyePik Inc., this automation turns each fashion and lifestyle inquiry into a clean sales record:",
+                "For Luma & Thread, this automation turns each fashion and lifestyle inquiry into a clean sales record:",
                 "",
                 "Buyer form -> n8n -> Google Sheets -> Gmail -> follow-up path",
                 "",

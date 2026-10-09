@@ -3,14 +3,22 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>EyePik Inc. Interested Buyer Automation</title>
+    <title>Luma &amp; Thread Interested Buyer Automation</title>
     <meta
       name="description"
-      content="A live presentation page for the EyePik Inc. interested buyer automation."
+      content="A live presentation page for the Luma &amp; Thread interested buyer automation."
     >
     <link rel="stylesheet" href="styles.css">
   </head>
   <body>
+    <header class="topbar">
+      <a class="brand" href="#top" aria-label="Scroll to top">Luma &amp; Thread</a>
+      <nav class="page-nav" aria-label="Page sections">
+        <a href="#run">Run</a>
+        <a href="#desk">Desk</a>
+        <a href="#path">Path</a>
+      </nav>
+    </header>
     <div class="corporate-bg" aria-hidden="true">
       <div class="bg-grid"></div>
       <div class="bg-plane bg-plane-one"></div>
@@ -19,9 +27,16 @@
       <div class="bg-line bg-line-two"></div>
     </div>
     <main>
-      <section class="hero">
+      <section class="hero reveal" id="top">
+        <div class="hero-pattern" aria-hidden="true">
+          <span class="hero-pattern-grid"></span>
+          <span class="hero-pattern-panel hero-pattern-panel-one"></span>
+          <span class="hero-pattern-panel hero-pattern-panel-two"></span>
+          <span class="hero-pattern-line hero-pattern-line-one"></span>
+          <span class="hero-pattern-line hero-pattern-line-two"></span>
+        </div>
         <div class="hero-copy reveal" data-parallax="0.08">
-          <p class="eyebrow">EyePik Inc.</p>
+          <p class="eyebrow">Luma &amp; Thread</p>
           <h1>Interested Buyer Automation</h1>
           <p>
             A working buyer intake flow for fashion and lifestyle sales teams:
@@ -29,18 +44,20 @@
             and personal shopping follow-up.
           </p>
           <div class="actions">
-            <a href="assets/eyepik-interested-buyer-automation.pptx">Download deck</a>
+            <a href="#run">Watch the run</a>
+            <a href="assets/luma-thread-interested-buyer-automation.pptx">Download deck</a>
             <a href="https://github.com/calina-miguel/fashion-buyer-automation">Open repository</a>
           </div>
         </div>
         <div class="video-stage reveal" data-parallax="-0.05">
+          <button class="video-toggle" type="button" aria-label="Play workflow video">Play</button>
           <video controls playsinline poster="assets/workflow-poster.png">
             <source src="assets/workflow-run.mp4" type="video/mp4">
           </video>
         </div>
       </section>
 
-      <section class="section reveal">
+      <section class="section reveal" id="run">
         <div class="section-copy">
           <p class="eyebrow">Live run</p>
           <h2>Published workflow accepted</h2>
@@ -54,7 +71,7 @@
 {"message":"Workflow was started"}</code></pre>
       </section>
 
-      <section class="split reveal">
+      <section class="split reveal" id="desk">
         <div class="image-stage" data-parallax="-0.035">
           <img src="assets/buyer-desk.png" alt="Buyer desk with tracker and email outbox">
         </div>
@@ -69,15 +86,15 @@
         </div>
       </section>
 
-      <section class="process reveal">
+      <section class="process reveal" id="path">
         <p class="eyebrow">Workflow path</p>
         <h2>Buyer form to follow-up</h2>
         <ol>
-          <li>Buyer submits product interest and preferences.</li>
-          <li>n8n normalizes fields and segments buyer intent.</li>
-          <li>Google Sheets receives the structured buyer record.</li>
-          <li>Gmail sends buyer confirmation and sales alert messages.</li>
-          <li>Ready-to-buy shoppers enter the personal shopping follow-up path.</li>
+          <li><button type="button">Buyer submits product interest and preferences.</button></li>
+          <li><button type="button">n8n normalizes fields and segments buyer intent.</button></li>
+          <li><button type="button">Google Sheets receives the structured buyer record.</button></li>
+          <li><button type="button">Gmail sends buyer confirmation and sales alert messages.</button></li>
+          <li><button type="button">Ready-to-buy shoppers enter the personal shopping follow-up path.</button></li>
         </ol>
       </section>
     </main>

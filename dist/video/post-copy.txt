@@ -1,6 +1,6 @@
 Interested buyers move fast. The sales workflow has to move with them.
 
-For EyePik Inc., this automation turns each fashion and lifestyle inquiry into a clean sales record:
+For Luma & Thread, this automation turns each fashion and lifestyle inquiry into a clean sales record:
 
 Buyer form -> n8n -> Google Sheets -> Gmail -> follow-up path
 

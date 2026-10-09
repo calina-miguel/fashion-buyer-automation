@@ -1,8 +1,8 @@
-# EyePik Inc. Interested Buyer Automation Walkthrough
+# Luma & Thread Interested Buyer Automation Walkthrough
 
 ## Goal
 
-Create a short screen recording that shows how EyePik Inc. captures interested fashion and lifestyle buyers, saves them to a tracker, alerts the sales team, and follows up with ready-to-buy shoppers.
+Create a short screen recording that shows how Luma & Thread captures interested fashion and lifestyle buyers, saves them to a tracker, alerts the sales team, and follows up with ready-to-buy shoppers.
 
 ## Recommended Length
 
@@ -101,7 +101,7 @@ Screen: back to workflow canvas or buyer desk.
 
 Voiceover:
 
-> Instead of manually sorting interested shoppers, EyePik Inc. gets a structured buyer record, faster sales alerts, and a clear follow-up path for the shoppers most likely to buy.
+> Instead of manually sorting interested shoppers, Luma & Thread gets a structured buyer record, faster sales alerts, and a clear follow-up path for the shoppers most likely to buy.
 
 On-screen action:
 
@@ -138,7 +138,7 @@ The production success response is:
 
 Managing interested buyers should not feel like chasing scattered messages.
 
-For EyePik Inc., I built a fashion and lifestyle buyer intake workflow that turns a shopper inquiry into a structured sales record.
+For Luma & Thread, I built a fashion and lifestyle buyer intake workflow that turns a shopper inquiry into a structured sales record.
 
 The flow:
 
