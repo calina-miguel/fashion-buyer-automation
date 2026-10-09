@@ -21,6 +21,8 @@ This is a portable n8n workflow for a fashion and lifestyle store: an end-to-end
 - `server.js` - local server that forwards buyer intake submissions to the live n8n webhook and keeps a local tracker for the page.
 - `public/` - buyer form, live tracker, outbox, and workflow backbone view.
 - `VIDEO_WALKTHROUGH.md` - recording script, shot list, and publishing copy.
+- `docs/` - public presentation page for GitHub Pages.
+- `dist/presentation/eyepik-interested-buyer-automation.pptx` - editable PowerPoint deck.
 
 ## Local Setup
 
@@ -35,6 +37,12 @@ Open:
 
 ```text
 http://localhost:3210
+```
+
+Public page:
+
+```text
+https://calina-miguel.github.io/fashion-buyer-automation/
 ```
 
 For an operating check:

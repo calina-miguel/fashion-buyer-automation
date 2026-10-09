@@ -1,10 +1,14 @@
 node_modules/
 store-data/
 sample-data/
+.presentation-build/
+.codex-finalizer/
 dist/video/frames/
 dist/video/frames.txt
 dist/video/dom-canvas.png
 dist/video/dom-rects.json
+dist/presentation/assets/pages-preview.png
+n8n-workflow-imported.png
 .env
 .DS_Store
 Thumbs.db
