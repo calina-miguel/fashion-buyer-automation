@@ -273,15 +273,87 @@ pre {
 
 .reveal {
   opacity: 0;
-  transform: translateY(28px);
+  transform: translateY(22px);
   transition:
-    opacity 700ms ease,
-    transform 700ms cubic-bezier(0.2, 0.72, 0.18, 1);
+    opacity 780ms ease,
+    transform 860ms cubic-bezier(0.16, 0.84, 0.24, 1);
 }
 
 .reveal.is-visible {
   opacity: 1;
   transform: translateY(0);
+}
+
+.section-copy > *,
+.hero-copy > *,
+.process > .eyebrow,
+.process > h2,
+.process li,
+pre,
+.video-stage,
+.image-stage {
+  opacity: 0;
+  transform: translateY(16px);
+  transition:
+    opacity 720ms ease,
+    transform 820ms cubic-bezier(0.16, 0.84, 0.24, 1);
+  transition-delay: var(--ease-delay, 0ms);
+}
+
+.is-visible .section-copy > *,
+.is-visible.hero-copy > *,
+.process.is-visible > .eyebrow,
+.process.is-visible > h2,
+.process.is-visible li,
+.is-visible pre,
+.is-visible.video-stage,
+.is-visible .image-stage {
+  opacity: 1;
+  transform: translateY(var(--parallax-y, 0));
+}
+
+.hero-copy > .eyebrow,
+.section-copy > .eyebrow,
+.process > .eyebrow {
+  --ease-delay: 80ms;
+}
+
+.hero-copy > h1,
+.section-copy > h2,
+.process > h2 {
+  --ease-delay: 150ms;
+}
+
+.hero-copy > p,
+.section-copy > p {
+  --ease-delay: 230ms;
+}
+
+.actions,
+pre,
+.video-stage,
+.image-stage {
+  --ease-delay: 310ms;
+}
+
+.process li:nth-child(1) {
+  --ease-delay: 120ms;
+}
+
+.process li:nth-child(2) {
+  --ease-delay: 180ms;
+}
+
+.process li:nth-child(3) {
+  --ease-delay: 240ms;
+}
+
+.process li:nth-child(4) {
+  --ease-delay: 300ms;
+}
+
+.process li:nth-child(5) {
+  --ease-delay: 360ms;
 }
 
 .actions a,
@@ -307,6 +379,11 @@ pre {
 
 @media (prefers-reduced-motion: reduce) {
   .reveal,
+  .section-copy > *,
+  .hero-copy > *,
+  .process > .eyebrow,
+  .process > h2,
+  .process li,
   .actions a,
   .process li,
   video,
@@ -320,6 +397,7 @@ pre {
   .image-stage,
   .section-copy,
   .corporate-bg {
+    opacity: 1;
     transform: none;
   }
 }
