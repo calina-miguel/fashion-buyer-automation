@@ -51,10 +51,10 @@ if (video && videoToggle) {
 const applyParallax = () => {
   const center = window.innerHeight / 2;
   if (corporateBg) {
-    corporateBg.style.transform = `translate3d(0, ${(window.scrollY * -0.16).toFixed(2)}px, 0)`;
+    corporateBg.style.transform = `translate3d(0, ${(window.scrollY * -0.24).toFixed(2)}px, 0)`;
   }
   if (heroPattern) {
-    heroPattern.style.transform = `translate3d(0, ${(window.scrollY * -0.28).toFixed(2)}px, 0)`;
+    heroPattern.style.transform = `translate3d(0, ${(window.scrollY * -0.44).toFixed(2)}px, 0)`;
   }
   for (const item of parallaxItems) {
     const strength = Number(item.dataset.parallax || 0);

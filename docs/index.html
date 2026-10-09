@@ -35,7 +35,7 @@
           <span class="hero-pattern-line hero-pattern-line-one"></span>
           <span class="hero-pattern-line hero-pattern-line-two"></span>
         </div>
-        <div class="hero-copy reveal" data-parallax="0.08">
+        <div class="hero-copy reveal" data-parallax="0.16">
           <p class="eyebrow">Luma &amp; Thread</p>
           <h1>Interested Buyer Automation</h1>
           <p>
@@ -49,7 +49,7 @@
             <a href="https://github.com/calina-miguel/fashion-buyer-automation">Open repository</a>
           </div>
         </div>
-        <div class="video-stage reveal" data-parallax="-0.05">
+        <div class="video-stage reveal" data-parallax="-0.12">
           <button class="video-toggle" type="button" aria-label="Play workflow video">Play</button>
           <video controls playsinline poster="assets/workflow-poster.png">
             <source src="assets/workflow-run.mp4" type="video/mp4">
@@ -58,7 +58,7 @@
       </section>
 
       <section class="section reveal" id="run">
-        <div class="section-copy">
+        <div class="section-copy" data-parallax="0.09">
           <p class="eyebrow">Live run</p>
           <h2>Published workflow accepted</h2>
           <p>
@@ -67,15 +67,15 @@
             executed checks.
           </p>
         </div>
-        <pre><code>POST /webhook/buyer-interest
+        <pre data-parallax="-0.11"><code>POST /webhook/buyer-interest
 {"message":"Workflow was started"}</code></pre>
       </section>
 
       <section class="split reveal" id="desk">
-        <div class="image-stage" data-parallax="-0.035">
+        <div class="image-stage" data-parallax="-0.12">
           <img src="assets/buyer-desk.png" alt="Buyer desk with tracker and email outbox">
         </div>
-        <div class="section-copy" data-parallax="0.04">
+        <div class="section-copy" data-parallax="0.1">
           <p class="eyebrow">Buyer desk</p>
           <h2>One intake point for the sales team</h2>
           <p>
@@ -90,11 +90,11 @@
         <p class="eyebrow">Workflow path</p>
         <h2>Buyer form to follow-up</h2>
         <ol>
-          <li><button type="button">Buyer submits product interest and preferences.</button></li>
-          <li><button type="button">n8n normalizes fields and segments buyer intent.</button></li>
-          <li><button type="button">Google Sheets receives the structured buyer record.</button></li>
-          <li><button type="button">Gmail sends buyer confirmation and sales alert messages.</button></li>
-          <li><button type="button">Ready-to-buy shoppers enter the personal shopping follow-up path.</button></li>
+          <li data-parallax="0.045"><button type="button">Buyer submits product interest and preferences.</button></li>
+          <li data-parallax="-0.035"><button type="button">n8n normalizes fields and segments buyer intent.</button></li>
+          <li data-parallax="0.05"><button type="button">Google Sheets receives the structured buyer record.</button></li>
+          <li data-parallax="-0.04"><button type="button">Gmail sends buyer confirmation and sales alert messages.</button></li>
+          <li data-parallax="0.055"><button type="button">Ready-to-buy shoppers enter the personal shopping follow-up path.</button></li>
         </ol>
       </section>
     </main>
