@@ -1,5 +1,6 @@
 const revealItems = [...document.querySelectorAll(".reveal")];
 const parallaxItems = [...document.querySelectorAll("[data-parallax]")];
+const corporateBg = document.querySelector(".corporate-bg");
 
 const observer = new IntersectionObserver(
   (entries) => {
@@ -16,6 +17,9 @@ for (const item of revealItems) observer.observe(item);
 
 const applyParallax = () => {
   const center = window.innerHeight / 2;
+  if (corporateBg) {
+    corporateBg.style.transform = `translate3d(0, ${(window.scrollY * -0.16).toFixed(2)}px, 0)`;
+  }
   for (const item of parallaxItems) {
     const strength = Number(item.dataset.parallax || 0);
     const rect = item.getBoundingClientRect();
